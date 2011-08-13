@@ -13,10 +13,9 @@
     
     jQuery.fn.widget = function(options) {
         
-        elem = $(this);
-                  
         defaults = {
             profile: "",
+            playlist: "uploads",
             max: "10"
         };
         
@@ -24,8 +23,10 @@
                 
         return this.each(function() {
             
-            $.getJSON('http://gdata.youtube.com/feeds/users/'+o.profile+'/uploads?alt=json&max-results='+o.max, function(data){
-                                                
+            var elem = $(this);
+            
+            $.getJSON('http://gdata.youtube.com/feeds/users/'+o.profile+'/'+o.playlist+'?alt=json&max-results='+o.max+'&callback=?', function(data){
+                
                 var entries = data.feed.entry;
                 
                 // Title with and link
@@ -37,7 +38,7 @@
                 
                 html.push('<h3><a href="'+uri+'">'+author+'</a></h3>');
                 
-                html.push("<ol>")
+                html.push("<ol>");
 
                 $.each(entries, function(index, value) {
                     var entry = entries[index],
@@ -48,14 +49,16 @@
                     vidURL = entry.link[0].href;
                 
                     html.push("<li>");
-                    html.push("<h4 class='title'>")
+                    html.push("<h4 class='title'>");
                     html.push(title);
-                    html.push("</h4>")
-                    html.push('<a href="'+vidURL+'"><img src="'+thumb+'" width="'+thumbW+'" height="'+thumbH+'" alt=""/></a>')
+                    html.push("</h4>");
+                    html.push('<a href="'+vidURL+'"><img src="'+thumb+'" width="'+thumbW+'" height="'+thumbH+'" alt=""/></a>');
                 
                 });
                 
                 html.push("</ol>");
+                
+                html.join('');
                 
                 elem.append(html.join(''));
                 
